@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+
+    </head>
+    <body>
+        <h1 th:text="'Startup Name: ' + ${startupProject.name}"></h1>
+
+        <form th:action="@{/acquisitionFormResult/}" th:object="${startupProject.growthElements}" method="post">
+            <fieldset>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Name</td>
+                            <td>Description</td>
+                            <td>Starting Period</td>
+                            <td>Ending Period</td>
+                            <td>Starting Value</td>
+                            <td>Growth Option</td>
+                            <td>Base Increment</td>
+                            <td>Percentage Growth</td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="element, itemStat : *{elements}">
+                            <td><input th:field="*{elements[__${itemStat.index}__].name}" /></td>
+                            <td><input th:field="*{elements[__${itemStat.index}__].description}" /></td>
+                            <td><input th:field="*{elements[__${itemStat.index}__].startingPeriod}" /></td>
+                            <td><input th:field="*{elements[__${itemStat.index}__].endingPeriod}" /></td>
+                            <td><input th:field="*{elements[__${itemStat.index}__].startingNumber}" /></td>                            
+                            <td><select name="growthOption">
+                                <option th:each="growthOption : ${T(com.mscproject.startup.utils.GrowthOption).values()}" th:value="${growthOption}" th:text="${growthOption}"></option>
+                            </select></td>
+                            <td><input th:field="*{elements[__${itemStat.index}__].baseIncrement}" /></td>
+                            <td><input th:field="*{elements[__${itemStat.index}__].percentageGrowth}" /></td>
+                        </tr>
+                    </tbody>
+                
+                </table>
+
+                <input type="submit" th:value="save" />
+            </fieldset>
+        </form>
+
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Acquisition Result</title>
+    </head>
+
+    <body>
+        <h1 th:text="'Startup Name: ' + ${startupProject.name}"></h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Period Number</th>
+                    <th>Number of Users Acquired</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="acquisition: ${acquisitions}">
+                    <td><span th:text="${acquisitionStat.index}"></td>
+                    <td><span th:text="${acquisition}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script th:inline="javascript">
+            var startupName = /*[[${startupProject.name}]]*/ "default";
+            var acquisitionsData = /*[[${acquisitions}]]*/ [1,2,3,4,5];
+        </script>
+        <script src="\js\acquisition_chart.js"></script>
+    </body>
+</html>
