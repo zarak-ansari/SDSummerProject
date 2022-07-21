@@ -1,12 +1,11 @@
 import React from "react"
-import Chart from "./Chart"
 
-export default function AcquisitionElements() {
+export default function AcquisitionElements(props) {
 
-  let numberOfPeriods = 10
+  let numberOfPeriods = props.numberOfPeriods
 
   const [linearAcquisitionElements, setLinearAcquisitionElements] = React.useState([])
-  const [acquisitionData, setAcquisitionData] = React.useState(Array(numberOfPeriods).fill(0))
+  // const [acquisitionData, setAcquisitionData] = React.useState(Array(numberOfPeriods).fill(0))
 
   const acquisitionsInputs = linearAcquisitionElements.map(element => <li key={element.id}>
     <input type="text" name="name" placeholder="name" value={element.name} onChange={(event) => handleChange(element.id, event)} />
@@ -42,7 +41,7 @@ export default function AcquisitionElements() {
         }
       }
     )
-    setAcquisitionData(result)
+    props.handleUpdate(result)
   }
 
   function addAcquisitionElement() {
@@ -66,7 +65,6 @@ export default function AcquisitionElements() {
         <button onClick={addAcquisitionElement}>Add Linear Acquisition Element</button>
         <button onClick={updateAcquisitionsData}>Update Chart</button>
       </div>
-      {acquisitionData.length > 0 && <Chart data={acquisitionData} />}
     </>
 
   );

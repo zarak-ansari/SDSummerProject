@@ -1,13 +1,14 @@
 import './App.css';
-import AcquisitionElements from './components/AcquisitionElements';
 import React from "react"
 
+import StartupProject from './components/StartupProject'
 function App() {
+
   return (
     <div className="App">
-      <AcquisitionElements />
+      <StartupProject />
     </div>
-  );
+  )
 }
 
 export default App;
