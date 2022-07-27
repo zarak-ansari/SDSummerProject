@@ -3,7 +3,9 @@ import React from "react"
 export default function Activation(props) {
 
     const [activationElements, setActivationElements] = React.useState([])
-    const [finalActivationPercentage, setFinalActivationPercentage] = React.useState()
+
+    const finalActivationPercentage = props.finalActivationPercentage
+    const setFinalActivationPercentage = props.setFinalActivationPercentage
 
     const handleChange = (id, event) => {
         event.preventDefault()
