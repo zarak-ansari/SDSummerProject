@@ -19,10 +19,7 @@ function Retention(props) {
         setDecayCurve(result)
     }
 
-    function updateRetainedUsers(e) {
-        e.preventDefault()
-
-
+    function updateRetainedUsers() {
         let result = Array(numberOfPeriods).fill(0)
         for (var i = 0; i < props.activatedUsers.length; i++) {
             for (var j = 0; j < decayCurve.length; j++) {
@@ -32,13 +29,14 @@ function Retention(props) {
         }
         props.setRetainedUsers(result)
     }
+    React.useEffect(updateRetainedUsers, [props.activatedUsers])
 
     return (
-        <form>
+        <>
             <input type="number" name="maxRetentionPeriod" value={maxRetentionPeriod} onChange={(event) => setMaxRetentionPeriod(event.target.value)} />
             <ul>{decayCurveInputs}</ul>
-            <button onClick={(e) => updateRetainedUsers(e)}>Calculate Users After Retention</button>
-        </form>
+            <button onClick={updateRetainedUsers}>Calculate Users After Retention</button>
+        </>
 
     )
 }

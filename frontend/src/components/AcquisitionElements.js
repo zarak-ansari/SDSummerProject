@@ -7,11 +7,16 @@ export default function AcquisitionElements(props) {
   const [linearAcquisitionElements, setLinearAcquisitionElements] = React.useState([])
 
   const acquisitionsInputs = linearAcquisitionElements.map(element => <li key={element.id}>
-    <input type="text" name="name" placeholder="name" value={element.name} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
-    <input type="text" name="description" placeholder="description" value={element.description} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
-    <input type="number" name="startingValue" placeholder="Starting Value" value={element.startingValue} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
-    <input type="number" name="incrementEachPeriod" placeholder="Increase Each Period" value={element.incrementEachPeriod} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
-    <input type="number" name="costPerAcquisition" placeholder="Cost Per Acquisition" value={element.costPerAcquisition} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
+    <label htmlFor="name">Name of the Element</label>
+    <input type="text" id="name" name="name" placeholder="name" value={element.name} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
+    <label htmlFor="description">Description</label>
+    <input type="text" id="description" name="description" placeholder="description" value={element.description} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
+    <label htmlFor="startingValue">Increase in Users Each Period</label>
+    <input type="number" id="startingValue" name="startingValue" placeholder="Starting Value" value={element.startingValue} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
+    <label htmlFor="incrementEachPeriod">Increase in Acquisitions Per Period</label>
+    <input type="number" id="incrementEachPeriod" name="incrementEachPeriod" placeholder="Increase Each Period" value={element.incrementEachPeriod} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
+    <label htmlFor="costPerAcquisition">Cost Per Acquisition</label>
+    <input type="number" id="costPerAcquisition" name="costPerAcquisition" placeholder="Cost Per Acquisition" value={element.costPerAcquisition} onChange={(event) => handleChangeInAcquisitionElements(element.id, event)} />
     <button onClick={(event) => deleteElement(event, element.id)}>Delete</button>
   </li>)
 
@@ -33,9 +38,16 @@ export default function AcquisitionElements(props) {
     }
   }
 
+  React.useEffect(updateAcquisitionsData, [props.numberOfPeriods])
+
   function updateAcquisitionsData() {
-    const acquisitionsResult = Array(numberOfPeriods).fill(0)
-    const acquisitionsCostsResult = Array(numberOfPeriods).fill(0)
+    const acquisitionsResult = []
+    const acquisitionsCostsResult = []
+
+    for (var i = 0; i < numberOfPeriods; i++) {
+      acquisitionsResult.push(0)
+      acquisitionsCostsResult.push(0)
+    }
 
     linearAcquisitionElements.forEach(
       element => {

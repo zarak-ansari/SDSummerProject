@@ -22,7 +22,11 @@ export default function UserCategory(props) {
             <Accordion><Accordion.Item eventKey="0">
                 <Accordion.Header>Acquisition</Accordion.Header>
                 <Accordion.Body>
-                    <AcquisitionElements numberOfPeriods={numberOfPeriods} setAcquisitionsData={setAcquisitions} setAcquisitionsCost={setAcquisitionsCost} />
+                    <AcquisitionElements
+                        numberOfPeriods={numberOfPeriods}
+                        setAcquisitionsData={setAcquisitions}
+                        setAcquisitionsCost={setAcquisitionsCost}
+                    />
                     <Chart data={acquisitions} />
                     <Chart data={acquisitionsCost} />
                 </Accordion.Body>

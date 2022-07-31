@@ -13,7 +13,8 @@ function Referrals(props) {
 
     function ReferralForm() {
         return (
-            <form>
+            <>
+                <label htmlFor="percentageOfReferringUsers">Percentage of Referring Users</label>
                 <input
                     name="percentageOfReferringUsers"
                     id="percentageOfReferringUsers"
@@ -22,6 +23,7 @@ function Referrals(props) {
                     value={percentageOfReferringUsers}
                     onChange={(event) => setPercentageOfReferringUsers(event.target.value)}
                 />
+                <label htmlFor="referralsPerUser">Referrals Per User</label>
                 <input
                     name="referralsPerUser"
                     id="referralsPerUser"
@@ -30,17 +32,18 @@ function Referrals(props) {
                     value={referralsPerUser}
                     onChange={(event) => setReferralsPerUser(event.target.value)}
                 />
+                <label htmlFor="costPerReferral">Referrals Per User</label>
                 <input
-                    name="costPerAcquisition"
-                    id="costPerAcquisition"
+                    name="costPerReferral"
+                    id="costPerReferral"
                     type="number"
                     placeholder="Cost Per Referral"
                     value={costPerReferral}
                     onChange={(event) => setCostPerReferral(event.target.value)}
                 />
 
-                <button onClick={updateUsersAfterReferrals}>Update Figures</button>
-            </form>
+                <button onClick={updateUsersAfterReferrals}>Update</button>
+            </>
         )
     }
 
@@ -49,10 +52,11 @@ function Referrals(props) {
         const result = Array(usersBeforeReferrals.length).fill(0)
         result[0] = usersBeforeReferrals[0]
         for (var i = 0; i < usersBeforeReferrals.length - 1; i++) {
-            result[i + 1] = usersBeforeReferrals[i + 1] + (usersBeforeReferrals[i] * userAcquisitionPerCurrentUsers)
+            result[i + 1] = usersBeforeReferrals[i + 1] + (result[i] * userAcquisitionPerCurrentUsers)
         }
         setUsersAfterCompoundingGrowth(result)
     }
+    React.useEffect(updateUsersAfterReferrals, [props.usersAfterRetention, props.finalActivationPercentage])
 
     return (
         <ReferralForm />
