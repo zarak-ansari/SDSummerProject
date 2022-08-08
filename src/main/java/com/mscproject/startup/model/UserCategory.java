@@ -25,7 +25,6 @@ public class UserCategory {
     // private List<Referral> Referral;
 
     public UserCategory() {
-
     }
 
     public UserCategory(Long id, String name, String description) {
