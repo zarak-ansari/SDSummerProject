@@ -1,90 +1,45 @@
 package com.mscproject.startup.security;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
 
-@Component
-public class JwtUtil implements Serializable {
+@Component // Marks this as a component. Now, Spring Boot will handle the creation and
+           // management of the JWTUtil Bean
+// and you will be able to inject it in other places of your code
+public class JWTUtil {
 
-    private static final long serialVersionUID = -2550185165626007488L;
-
-    public static final long JWT_TOKEN_VALIDITY = 30 * 24 * 60 * 60;
-
-    @Value("${jwt.secret}")
+    // Injects the jwt-secret property set in the resources/application.properties
+    // file
+    @Value("${jwt-secret}")
     private String secret;
 
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+    // Method to sign and create a JWT using the injected secret
+    public String generateToken(String email) throws IllegalArgumentException, JWTCreationException {
+        return JWT.create()
+                .withSubject("User Details")
+                .withClaim("email", email)
+                .withIssuedAt(new Date())
+                .withIssuer("Startup Projections")
+                .sign(Algorithm.HMAC256(secret));
     }
 
-    public Date getIssuedAtDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getIssuedAt);
+    // Method to verify the JWT and then decode and extract the user email stored in
+    // the payload of the token
+    public String validateTokenAndRetrieveSubject(String token) throws JWTVerificationException {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
+                .withSubject("User Details")
+                .withIssuer("YOUR APPLICATION/PROJECT/COMPANY NAME")
+                .build();
+        DecodedJWT jwt = verifier.verify(token);
+        return jwt.getClaim("email").asString();
     }
 
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
-    private Boolean ignoreTokenExpiration(String token) {
-        // here you specify tokens, for that the expiration is ignored
-        return false;
-    }
-
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("authorities", userDetails.getAuthorities()
-                .stream()
-                .map(auth -> auth.getAuthority())
-                .collect(Collectors.toList()));
-        return doGenerateToken(claims, userDetails.getUsername());
-    }
-
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
-    }
-
-    public Boolean canTokenBeRefreshed(String token) {
-        return (!isTokenExpired(token) || ignoreTokenExpiration(token));
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        if (!StringUtils.hasText(token))
-            return false;
-
-        final String username = getUsernameFromToken(token);
-        return (userDetails != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
 }

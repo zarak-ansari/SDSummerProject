@@ -1,62 +1,73 @@
 package com.mscproject.startup.security;
 
-import javax.servlet.http.HttpServletResponse;
-
+import com.mscproject.startup.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
+import javax.servlet.http.HttpServletResponse;
+
+@Configuration // Marks this as a configuration file
+@EnableWebSecurity // Enables security for this application
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    // Injecting Dependencies
     @Autowired
-    private UserDetailsService userDetailsService;
-
+    private UserRepo userRepo;
     @Autowired
-    private CustomPasswordEncoder passwordEncoder;
-
+    private JWTFilter filter;
     @Autowired
-    private JwtFilter jwtFilter;
+    private MyUserDetailsService uds;
 
     @Override
+    protected void configure(HttpSecurity http) throws Exception { // Method to configure your app security
+        http.csrf().disable() // Disabling csrf
+                .httpBasic().disable() // Disabling http basic
+                .cors() // Enabling cors
+                .and()
+                .authorizeHttpRequests() // Authorizing incoming requests
+                .antMatchers("/api/auth/**").permitAll() // Allows auth requests to be made without authentication of
+                                                         // any sort
+                .antMatchers("/api/user/**").hasRole("USER") // Allows only users with the "USER" role to make requests
+                                                             // to the user routes
+                .and()
+                .userDetailsService(uds) // Setting the user details service to the custom implementation
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        // Rejecting request as unauthorized when entry point is reached
+                        // If this point is reached it means that the current request requires
+                        // authentication
+                        // and no JWT token was found attached to the Authorization header of the
+                        // current request.
+                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                                "Unauthorized"))
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Setting Session to be stateless
+
+        // Adding the JWT filter
+        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    // Creating a bean for the password encoder
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // Exposing the bean of the authentication manager which will be used to run the
+    // authentication process
+    @Bean
+    @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // TODO Auto-generated method stub
-
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder.getPasswordEncoder());
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // TODO Auto-generated method stub
-        http = http.csrf().disable().cors().disable();
-
-        http = http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
-
-        http = http.exceptionHandling()
-                .authenticationEntryPoint((request, response, ex) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                }).and();
-        http.authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 }

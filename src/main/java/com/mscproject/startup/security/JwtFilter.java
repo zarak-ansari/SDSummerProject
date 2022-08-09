@@ -1,61 +1,68 @@
 package com.mscproject.startup.security;
 
-import java.io.IOException;
-import java.util.List;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
+@Component // Marks this as a component. Now, Spring Boot will handle the creation and
+           // management of the JWTFilter Bean
+// and you will be able to inject it in other places of your code
+public class JWTFilter extends OncePerRequestFilter {
 
-@Component
-public class JwtFilter extends OncePerRequestFilter {
-
+    // Injecting Dependencies
     @Autowired
-    private AppUserRepository appUserRepository;
-
+    private MyUserDetailsService userDetailsService;
     @Autowired
-    private JwtUtil jwtUtil;
+    private JWTUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
+        // Extracting the "Authorization" header
+        String authHeader = request.getHeader("Authorization");
 
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!StringUtils.hasText(header) || (StringUtils.hasText(header) && !header.startsWith("Bearer"))) {
-            chain.doFilter(request, response);
-            return;
+        // Checking if the header contains a Bearer token
+        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
+            // Extract JWT
+            String jwt = authHeader.substring(7);
+            if (jwt == null || jwt.isBlank()) {
+                // Invalid JWT
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
+            } else {
+                try {
+                    // Verify token and extract email
+                    String email = jwtUtil.validateTokenAndRetrieveSubject(jwt);
+
+                    // Fetch User Details
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                    // Create Authentication Token
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email,
+                            userDetails.getPassword(), userDetails.getAuthorities());
+
+                    // Setting the authentication on the Security Context using the created token
+                    if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                } catch (JWTVerificationException exc) {
+                    // Failed to verify JWT
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
+                }
+            }
         }
 
-        final String token = header.split(" ")[1].trim();
-
-        UserDetails userDetails = appUserRepository
-                .findByUsername(jwtUtil.getUsernameFromToken(token))
-                .orElse(null);
-
-        if (!jwtUtil.validateToken(token, userDetails)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null,
-                userDetails == null ? List.of() : userDetails.getAuthorities());
-
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(request, response);
+        // Continuing the execution of the filter chain
+        filterChain.doFilter(request, response);
     }
 }
