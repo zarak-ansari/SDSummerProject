@@ -11,15 +11,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity // Marks this class as an Entity
-@Getter // Defines the getter methods of the member fields
-@Setter // Defines the setter methods of the member fields
-@ToString // Defines a meaningful toString implementation of this class
-@NoArgsConstructor // Defines the default constructor
+@Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class AppUser {
 
-    @Id // Marks the "id" field as the identifier of this entity
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) // The "id" field is to be generated automatically
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String email;

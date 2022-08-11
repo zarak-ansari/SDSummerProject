@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @RestController // Marks the class a rest controller
 @RequestMapping("/api/auth") // Requests made to /api/auth/anything will be handles by this class
+@CrossOrigin
 public class AuthController {
 
     // Injecting Dependencies
@@ -47,7 +49,7 @@ public class AuthController {
         String token = jwtUtil.generateToken(user.getEmail());
 
         // Responding with JWT
-        return Collections.singletonMap("jwt-token", token);
+        return Collections.singletonMap("token", token);
     }
 
     // Defining the function to handle the POST route for logging in a user
@@ -68,7 +70,7 @@ public class AuthController {
             String token = jwtUtil.generateToken(body.getEmail());
 
             // Respond with the JWT
-            return Collections.singletonMap("jwt-token", token);
+            return Collections.singletonMap("token", token);
         } catch (AuthenticationException authExc) {
             // Auhentication Failed
             throw new RuntimeException("Invalid Login Credentials");

@@ -1,5 +1,5 @@
 import React from "react"
-import UserCategory from './UserCategory';
+import UserCategory from './UserCategorySubcomponents/UserCategory';
 
 function StartupProject() {
     const [numberOfPeriods, setNumberOfPeriods] = React.useState(12)
