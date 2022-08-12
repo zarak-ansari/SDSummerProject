@@ -36,6 +36,9 @@ public class AuthController {
     // Defining the function to handle the POST route for registering a user
     @PostMapping("/register")
     public Map<String, Object> registerHandler(@RequestBody AppUser user) {
+
+        if (userRepo.findByEmail(user.getEmail()).isPresent())
+            throw new RuntimeException("Username already exists");
         // Encoding Password using Bcrypt
         String encodedPass = passwordEncoder.encode(user.getPassword());
 

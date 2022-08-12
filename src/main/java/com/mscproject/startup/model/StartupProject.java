@@ -26,6 +26,7 @@ public class StartupProject {
     private Long id;
     private String name;
     private String description;
+    private int numberOfPeriods;
 
     @ManyToOne
     private AppUser user;
@@ -33,8 +34,9 @@ public class StartupProject {
     @OneToMany(cascade = CascadeType.ALL)
     private List<AcquisitionElement> acquisitionElements = new ArrayList<>();
 
-    // private List<ActivationElement> activationElements;
-    // private List<RetentionCurve> retentionCurve;
-    // private List<Referral> Referral;
+    private List<ActivationElement> activationElements;
+
+    private List<Double> retentionCurve;
+    private List<Referral> referrals;
 
 }
