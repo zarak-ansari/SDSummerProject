@@ -36,7 +36,8 @@ public class StartupProject {
 
     private List<ActivationElement> activationElements;
 
-    private List<Double> retentionCurve;
-    private List<Referral> referrals;
+    private List<Float> retentionCurve;
+    private Referral referrals;
+    private Monetization monetization;
 
 }

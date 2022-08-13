@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mscproject.startup.service.StartupProjectService;
-import com.mscproject.startup.model.AcquisitionElement;
-import com.mscproject.startup.model.StartupProject;
+import com.mscproject.startup.model.*;
 
 @RestController
 @RequestMapping("api/startup_project")
@@ -39,9 +38,28 @@ public class StartupProjectController {
         userCategoryService.setAcquisitionElements(projectId, acquisitionElements);
     }
 
-    @GetMapping("/{projectId}/acquisition_elements")
-    public List<AcquisitionElement> getAcquisitionElements(@PathVariable Long projectId) {
-        return userCategoryService.getAcquisitionElements(projectId);
+    @PostMapping("/{projectId}/activation_elements")
+    public void setActivationElements(@RequestBody List<ActivationElement> activationElements,
+            @PathVariable Long projectId) {
+        userCategoryService.setActivationElements(projectId, activationElements);
+    }
+
+    @PostMapping("/{projectId}/retention")
+    public void setRetention(@RequestBody List<Float> retentionCurve,
+            @PathVariable Long projectId) {
+        userCategoryService.setRetentionCurve(projectId, retentionCurve);
+    }
+
+    @PostMapping("/{projectId}/referral")
+    public void setMonetization(@RequestBody Referral referral,
+            @PathVariable Long projectId) {
+        userCategoryService.setReferral(projectId, referral);
+    }
+
+    @PostMapping("/{projectId}/monetization")
+    public void setMonetization(@RequestBody Monetization monetization,
+            @PathVariable Long projectId) {
+        userCategoryService.setMonetization(projectId, monetization);
     }
 
 }

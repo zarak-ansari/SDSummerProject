@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.mscproject.startup.repository.StartupProjectRepository;
 import com.mscproject.startup.model.AcquisitionElement;
+import com.mscproject.startup.model.ActivationElement;
 import com.mscproject.startup.model.AppUser;
+import com.mscproject.startup.model.Monetization;
+import com.mscproject.startup.model.Referral;
 import com.mscproject.startup.model.StartupProject;
 
 @Service
@@ -43,6 +46,30 @@ public class StartupProjectService {
     public List<StartupProject> getStartupProjectsOfUser() {
         AppUser user = userService.getUser();
         return startupProjectRepository.findByUser(user);
+    }
+
+    public void setActivationElements(Long projectId, List<ActivationElement> activationElements) {
+        StartupProject startupProject = startupProjectRepository.findById(projectId).get();
+        startupProject.setActivationElements(activationElements);
+        startupProjectRepository.save(startupProject);
+    }
+
+    public void setRetentionCurve(Long projectId, List<Float> retentionCurve) {
+        StartupProject startupProject = startupProjectRepository.findById(projectId).get();
+        startupProject.setRetentionCurve(retentionCurve);
+        startupProjectRepository.save(startupProject);
+    }
+
+    public void setReferral(Long projectId, Referral referral) {
+        StartupProject startupProject = startupProjectRepository.findById(projectId).get();
+        startupProject.setReferrals(referral);
+        startupProjectRepository.save(startupProject);
+    }
+
+    public void setMonetization(Long projectId, Monetization monetization) {
+        StartupProject startupProject = startupProjectRepository.findById(projectId).get();
+        startupProject.setMonetization(monetization);
+        startupProjectRepository.save(startupProject);
     }
 
 }
