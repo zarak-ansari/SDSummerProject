@@ -3,13 +3,7 @@ package com.mscproject.startup.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,10 +28,14 @@ public class StartupProject {
     @OneToMany(cascade = CascadeType.ALL)
     private List<AcquisitionElement> acquisitionElements = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ActivationElement> activationElements;
 
+    @ElementCollection
     private List<Float> retentionCurve;
+    @OneToOne(cascade = CascadeType.ALL)
     private Referral referrals;
+    @OneToOne(cascade = CascadeType.ALL)
     private Monetization monetization;
 
 }

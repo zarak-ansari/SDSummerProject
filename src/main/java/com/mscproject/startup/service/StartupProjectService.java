@@ -2,16 +2,11 @@ package com.mscproject.startup.service;
 
 import java.util.List;
 
+import com.mscproject.startup.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mscproject.startup.repository.StartupProjectRepository;
-import com.mscproject.startup.model.AcquisitionElement;
-import com.mscproject.startup.model.ActivationElement;
-import com.mscproject.startup.model.AppUser;
-import com.mscproject.startup.model.Monetization;
-import com.mscproject.startup.model.Referral;
-import com.mscproject.startup.model.StartupProject;
 
 @Service
 public class StartupProjectService {

@@ -2,6 +2,7 @@ package com.mscproject.startup.controller;
 
 import java.util.List;
 
+import com.mscproject.startup.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mscproject.startup.service.StartupProjectService;
-import com.mscproject.startup.model.*;
+
 
 @RestController
 @RequestMapping("api/startup_project")
@@ -44,13 +45,13 @@ public class StartupProjectController {
         userCategoryService.setActivationElements(projectId, activationElements);
     }
 
-    @PostMapping("/{projectId}/retention")
+    @PostMapping("/{projectId}/retention_curve")
     public void setRetention(@RequestBody List<Float> retentionCurve,
             @PathVariable Long projectId) {
         userCategoryService.setRetentionCurve(projectId, retentionCurve);
     }
 
-    @PostMapping("/{projectId}/referral")
+    @PostMapping("/{projectId}/referrals")
     public void setMonetization(@RequestBody Referral referral,
             @PathVariable Long projectId) {
         userCategoryService.setReferral(projectId, referral);
