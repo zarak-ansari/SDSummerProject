@@ -67,4 +67,7 @@ public class StartupProjectService {
         startupProjectRepository.save(startupProject);
     }
 
+    public void deleteStartupProjectById(Long id) {
+        startupProjectRepository.deleteById(id);
+    }
 }

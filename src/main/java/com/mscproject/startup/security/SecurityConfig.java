@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JWTFilter filter;
     @Autowired
-    private MyUserDetailsService uds;
+    private UserDetailsServiceImpl uds;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception { // Method to configure your app security

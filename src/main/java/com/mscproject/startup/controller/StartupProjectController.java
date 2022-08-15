@@ -4,63 +4,63 @@ import java.util.List;
 
 import com.mscproject.startup.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mscproject.startup.service.StartupProjectService;
 
 
 @RestController
 @RequestMapping("api/startup_project")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class StartupProjectController {
 
     @Autowired
-    private StartupProjectService userCategoryService;
+    private StartupProjectService startupProjectService;
 
     @PostMapping
     public void createStartupProject(@RequestBody StartupProject startupProject) {
-        userCategoryService.createStartupProject(startupProject);
+        startupProjectService.createStartupProject(startupProject);
     }
 
     @GetMapping("/{id}")
     public StartupProject getStartupProject(@PathVariable Long id) {
-        return userCategoryService.getStartupProjectById(id);
+        return startupProjectService.getStartupProjectById(id);
     }
 
     @PostMapping("/{projectId}/acquisition_elements")
     public void setAcquisitionElements(@RequestBody List<AcquisitionElement> acquisitionElements,
             @PathVariable Long projectId) {
-        userCategoryService.setAcquisitionElements(projectId, acquisitionElements);
+        startupProjectService.setAcquisitionElements(projectId, acquisitionElements);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteStartupProject(@PathVariable Long id) {
+        startupProjectService.deleteStartupProjectById(id);
+    }
+
 
     @PostMapping("/{projectId}/activation_elements")
     public void setActivationElements(@RequestBody List<ActivationElement> activationElements,
             @PathVariable Long projectId) {
-        userCategoryService.setActivationElements(projectId, activationElements);
+        startupProjectService.setActivationElements(projectId, activationElements);
     }
 
     @PostMapping("/{projectId}/retention_curve")
     public void setRetention(@RequestBody List<Float> retentionCurve,
             @PathVariable Long projectId) {
-        userCategoryService.setRetentionCurve(projectId, retentionCurve);
+        startupProjectService.setRetentionCurve(projectId, retentionCurve);
     }
 
     @PostMapping("/{projectId}/referrals")
     public void setMonetization(@RequestBody Referral referral,
             @PathVariable Long projectId) {
-        userCategoryService.setReferral(projectId, referral);
+        startupProjectService.setReferral(projectId, referral);
     }
 
     @PostMapping("/{projectId}/monetization")
     public void setMonetization(@RequestBody Monetization monetization,
             @PathVariable Long projectId) {
-        userCategoryService.setMonetization(projectId, monetization);
+        startupProjectService.setMonetization(projectId, monetization);
     }
 
 }

@@ -18,6 +18,6 @@ public class Monetization {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long Id;
-    private int revenuePerUserPerPeriod;
+    private float revenuePerUserPerPeriod;
     private float percentageOfPaidUsers;
 }

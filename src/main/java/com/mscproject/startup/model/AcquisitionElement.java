@@ -20,7 +20,7 @@ public class AcquisitionElement {
     private String description;
     private int startingValue;
     private int incrementEachPeriod;
-    private int costPerAcquisition;
+    private float costPerAcquisition;
 
 
 }

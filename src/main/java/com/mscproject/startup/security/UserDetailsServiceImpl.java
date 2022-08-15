@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component // Marks this as a component. Now, Spring Boot will handle the creation and
            // management of the MyUserDetailsService Bean
 // and you will be able to inject it in other places of your code
-public class MyUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     // Injecting Dependencies
     @Autowired
