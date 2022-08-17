@@ -11,7 +11,7 @@ import com.mscproject.startup.service.StartupProjectService;
 
 @RestController
 @RequestMapping("api/startup_project")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class StartupProjectController {
 
     @Autowired

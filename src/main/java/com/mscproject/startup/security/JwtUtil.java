@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component // Marks this as a component. Now, Spring Boot will handle the creation and
-           // management of the JWTUtil Bean
-// and you will be able to inject it in other places of your code
+@Component
 public class JWTUtil {
 
     // Injects the jwt-secret property set in the resources/application.properties

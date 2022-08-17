@@ -31,10 +31,10 @@ public class JWTFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         // Checking if the header contains a Bearer token
-        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && !(authHeader.length()==0) && authHeader.startsWith("Bearer ")) {
             // Extract JWT
             String jwt = authHeader.substring(7);
-            if (jwt == null || jwt.isBlank()) {
+            if (jwt == null || jwt.length()==0) {
                 // Invalid JWT
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
             } else {
