@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component // Marks this as a component. Now, Spring Boot will handle the creation and
-           // management of the JWTFilter Bean
-// and you will be able to inject it in other places of your code
+@Component
 public class JWTFilter extends OncePerRequestFilter {
 
     // Injecting Dependencies
