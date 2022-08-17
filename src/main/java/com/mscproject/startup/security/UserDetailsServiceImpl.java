@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // Fetch User from the DB
         Optional<AppUser> userRes = userRepo.findByEmail(email);
         // No user found
-        if (userRes.isEmpty())
+        if (!userRes.isPresent())
             throw new UsernameNotFoundException("Could not findUser with email = " + email);
         // Return a User Details object using the fetched User information
         AppUser user = userRes.get();
